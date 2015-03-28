@@ -69,7 +69,7 @@ body {
    <!--toggle buttons for displayed data-->
    <div class="toggle-btn-grp" id = dataselect>
        <label onclick="allData()" class="toggle-btn"><input type="radio" name="group2" checked/>All</label>
-       <label onclick="freshmenData()" class="toggle-btn"><input type="radio" name="group2"/>Freshman</label>
+       <label onclick="freshmenData()" class="toggle-btn"><input type="radio" name="group2"/>Freshmen</label>
        <label onclick="upperclassmenData()" class="toggle-btn"><input type="radio" name="group2"/>Upperclassmen</label>
    </div>
  </div>
@@ -163,16 +163,77 @@ function draw(data) {
       .on('mouseout', tip.hide)
 }
 
+function update(data) {
+  // get bars from data
+  var bars = svg.selectAll("rect")
+    .data(data);
+
+  x.domain(data.map(function(d) { return d.plan; }));
+  //Update x-axis
+  svg.select(".x.axis")
+      .transition()
+      .duration(500)
+      .call(xAxis)
+      .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", function(d) { return "rotate(-65)"; });
+
+      
+  //Exit (removing bars)…
+  bars.exit()
+    .transition()
+    .duration(500)
+    .attr("height", 0)
+    .attr("y", height)
+    .remove(); 
+    
+  //Update (updating existing bars)…
+  bars
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+      .attr("class", function(d) { return d.plan.split(" ", 1)[0] === "Barnard" ? "barnard-bar" : "columbia-bar"; })
+      .transition()
+      .duration(500)
+      .attr("x", function(d) { return x(d.plan); })
+      .attr("y", function(d) { return y(d.cost); })
+      .attr("width", x.rangeBand())
+      .attr("height", function(d) { return height - y(d.cost); });
+    
+  svg.selectAll("rect") //Selects all rects (as yet nonexistent)
+    .data(data)     //Binds data to selection, returns update selection
+    .enter()           //Extracts the enter selection, i.e., 20 placeholder elements
+    .append("rect");    //Creates a 'rect' inside each of the placeholder elements
+  
+  //Enter (new bars)…
+  bars.enter()
+    .append("rect")
+    .on('mouseover', tip.show)
+    .on('mouseout', tip.hide)
+    .attr("class", function(d) { return d.plan.split(" ", 1)[0] === "Barnard" ? "barnard-bar" : "columbia-bar"; })
+    .attr("x", function(d) { return x(d.plan); })
+    .attr("width", x.rangeBand())
+    .attr("height", 0)
+    .attr("y", height)
+    .transition()
+    .duration(500)
+    .attr("y", function(d) { return y(d.cost); })
+    .attr("height", function(d) { return height - y(d.cost); });
+}
+
+
+// Potential better way to do colors: .style("fill", function(d) { return d.plan.split(" ", 1)[0] === "Barnard" ? d3.rgb("#005596") : d3.rgb("#C4D8E2"); });
 
 //  drawing with freshmen limited data section, called by click
 function freshmenData() {
     if (!freshmen) {
       freshmen = true;
       upperclassmen = false;
-      svg.selectAll("*").remove();
+      //svg.selectAll("*").remove();
       // Get limited data
       d3.tsv("freshmen.tsv", function(error, data) {
-        draw(data);
+        update(data);
       });
     }
 }
@@ -182,10 +243,10 @@ function upperclassmenData() {
     if (!upperclassmen) {
       freshmen = false;
       upperclassmen = true;
-      svg.selectAll("*").remove();
+      //svg.selectAll("*").remove();
       // Get limited data
       d3.tsv("upperclassmen.tsv", function(error, data) {
-        draw(data);
+        update(data);
       });
     }
 }
@@ -195,10 +256,10 @@ function allData() {
   {
     freshmen = false;
     upperclassmen = false;
-    svg.selectAll("*").remove();
+    //svg.selectAll("*").remove();
     // Get the data again
     d3.tsv("data.tsv", function(error, data) {
-      draw(data);
+      update(data);
     });
   }
 }
