@@ -62,6 +62,28 @@ body {
   top: 100%;
   left: 0;
 }
+#colorkey{
+  float: right;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 5px;
+}
+#title{
+  text-align: center;
+  position: relative;
+  text-decoration: underline;
+}
+#content{
+  padding-left: 2px;
+  padding-right: 2px;
+}
+#Columbia{
+  color: #C4D8E2;
+}
+#Barnard{
+  color: #005596;
+}
 </style>
 <body>
   
@@ -72,7 +94,23 @@ body {
        <label onclick="freshmenData()" class="toggle-btn"><input type="radio" name="group2"/>Freshmen</label>
        <label onclick="upperclassmenData()" class="toggle-btn"><input type="radio" name="group2"/>Upperclassmen</label>
    </div>
- </div>
+  </div>
+  <div id="colorkey">
+    
+    <div id= "title">
+      <p>
+        KEY
+      </p>
+    </div>
+    <div id= "content"> 
+      <p id= "Columbia">
+      Light Blue = Columbia
+      </p>
+      <p id= "Barnard">
+      Dark Blue = Barnard
+      </p>
+    </div>
+  </div>
   
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
