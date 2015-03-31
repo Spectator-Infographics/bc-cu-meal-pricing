@@ -1,39 +1,33 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style>
+<p dir="ltr"><span id="docs-internal-guid-381ac43c-b547-29ea-7405-0d8f690d5dce">The Barnard/Columbia Dances, which will take place on May 2 and 3 at </span>Miller Theatre, will feature works from master choreographer Mark Morris, along with pieces by Jodi Melnick, Diane Coburn Bruning, and John Heginbotham.</p>
 
-body {
-  font: 10px sans-serif;
-}
+<p id="graph"></p>
 
-.axis path,
+<div id="option"><!--toggle buttons for displayed data--><div class="toggle-btn-grp" id="dataselect"><label class="toggle-btn" onclick="allData()"><input checked="checked" name="group2" type="radio" />All</label> <label class="toggle-btn" onclick="freshmenData()"><input name="group2" type="radio" />Freshmen</label> <label class="toggle-btn" onclick="upperclassmenData()"><input name="group2" type="radio" />Upperclassmen</label></div></div>
+
+<p><span id="docs-internal-guid-381ac43c-b547-29ea-7405-0d8f690d5dce">Entitled &ldquo;Gloria&rdquo; and set to </span>Vivaldi&rsquo;s &ldquo;Gloria in D major,&rdquo;&nbsp;the Mark Morris piece will be staged by Barnard&rsquo;s Visiting Associate Professor of Professional Practice Marjorie Folkman, BC &rsquo;91. &ldquo;Gloria&rdquo; was originally performed in 1981 by Mark Morris, and Folkman is one of Morris&rsquo;s former dancers.</p>
+
+<style type="text/css">.axis path,
 .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
-
 .columbia-bar {
   fill: #C4D8E2;
 }
-
 .columbia-bar:hover {
   /*fill: #DADDDB;*/
   fill: #D2D5D3
 }
-
 .barnard-bar {
   fill: #005596;
 }
-
 .barnard-bar:hover {
   fill: #8E908F;
 }
-
 .x.axis path {
   display: none;
 }
-
 .d3-tip {
   line-height: 1;
   font-weight: bold;
@@ -42,7 +36,6 @@ body {
   color: #fff;
   border-radius: 2px;
 }
-
 /* Creates a small triangle extender for the tooltip */
 .d3-tip:after {
   box-sizing: border-box;
@@ -55,7 +48,6 @@ body {
   position: absolute;
   text-align: center;
 }
-
 /* Style northward tooltips differently */
 .d3-tip.n:after {
   margin: -1px 0 0 0;
@@ -63,26 +55,12 @@ body {
   left: 0;
 }
 </style>
-<body>
-  <p id="test">
-  </p>
 
-  <div id="option">
-   <!--toggle buttons for displayed data-->
-   <div class="toggle-btn-grp" id = dataselect>
-       <label onclick="allData()" class="toggle-btn"><input type="radio" name="group2" checked/>All</label>
-       <label onclick="freshmenData()" class="toggle-btn"><input type="radio" name="group2"/>Freshmen</label>
-       <label onclick="upperclassmenData()" class="toggle-btn"><input type="radio" name="group2"/>Upperclassmen</label>
-   </div>
- </div>
-  
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-<script>
+<script src="http://d3js.org/d3.v3.min.js"></script><script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script><script>
 
-var margin = {top: 40, right: 20, bottom: 150, left: 40},
-    width = 700 - margin.left - margin.right,
-    height = 600 - margin.top - margin.bottom;
+var margin = {top: 20, right: 10, bottom: 150, left: 40},
+    width = $(document.getElementById("graph")).width() - margin.left - margin.right,
+    height = width * 4/7;
 
 //var formatPercent = d3.format(".0%");
 
@@ -112,7 +90,7 @@ var tip = d3.tip()
     return "<strong>Cost/Meal:</strong> <span style='color:red'>" + "$" + d.cost + "</span>";
   })
 
-var svg = d3.select(document.getElementById("test")).append("svg")
+var svg = d3.select(document.getElementById("graph")).append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -132,8 +110,8 @@ function type(d) {
 }
 
 function draw(data) {
-  x.domain(data.map(function(d) { return d.plan.substr(d.plan.indexOf(" ") + 1); }));
-  svg.append("g")
+       x.domain(data.map(function(d) { return d.plan; }));
+       svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
@@ -141,7 +119,8 @@ function draw(data) {
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
-        .attr("transform", function(d) { return "rotate(-65)"; });
+        .attr("transform", function(d) { return "rotate(-65)"; })
+        .text(function(d) { return d.substr(d.indexOf(" ") + 1); });
 
   svg.append("g")
       .attr("class", "y axis")
@@ -170,7 +149,7 @@ function update(data) {
   var bars = svg.selectAll("rect")
     .data(data);
 
-  x.domain(data.map(function(d) { return d.plan.substr(d.plan.indexOf(" ") + 1); }));
+  x.domain(data.map(function(d) { return d.plan; }));
   //Update x-axis
   svg.select(".x.axis")
       .transition()
@@ -180,7 +159,8 @@ function update(data) {
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
-        .attr("transform", function(d) { return "rotate(-65)"; });
+        .attr("transform", function(d) { return "rotate(-65)"; })
+        .text(function(d) { return d.substr(d.indexOf(" ") + 1); });
 
       
   //Exit (removing bars)…
@@ -265,7 +245,5 @@ function allData() {
     });
   }
 }
-
-
 
 </script>
