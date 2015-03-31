@@ -1,8 +1,3 @@
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-
-
-
 var margin = {top: 40, right: 20, bottom: 150, left: 40},
     width = 700 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
