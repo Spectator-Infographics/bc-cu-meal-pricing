@@ -1,0 +1,17 @@
+- title 'Meal Plan Comparison'
+%link{:type => "text/css", :rel => "stylesheet", :href => "/mealplan infographics/mealplan.css.scss"}
+%link{:href => "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css", :rel => "stylesheet"}
+%script{:src="/mealplan infographics/mealplan.js"}
+%body
+  #option
+    .col-md-6.col-md-offset-3
+      / toggle buttons for displayed data
+      #dataselect.toggle-btn-grp
+        %label.toggle-btn{:onclick => ""}
+          %input{:name => "group2", :type => "radio"}>All
+        %label.toggle-btn{:onclick => ""}
+          %input{:name => "group2", :type => "radio"}>Freshman
+        %label.toggle-btn{:onclick => ""}
+          %input{:name => "group2", :type => "radio"}>Columbia
+        %label.toggle-btn{:onclick => ""}
+          %input{:name => "group2", :type => "radio"}>Barnard
