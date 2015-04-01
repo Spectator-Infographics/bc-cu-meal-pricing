@@ -1,6 +1,21 @@
 <p dir="ltr"><span id="docs-internal-guid-381ac43c-b547-29ea-7405-0d8f690d5dce">The Barnard/Columbia Dances, which will take place on May 2 and 3 at </span>Miller Theatre, will feature works from master choreographer Mark Morris, along with pieces by Jodi Melnick, Diane Coburn Bruning, and John Heginbotham.</p>
 
-<p id="graph"></p>
+<div id = "bordered">
+<p id="graph">
+</p>
+<div id="colorkey">
+   <div id= "title">
+       KEY
+   </div>
+   <div> 
+   <div id="Columbia">
+     Light Blue = Columbia
+   </div>
+   <div id="Barnard">
+     Dark Blue = Barnard
+    </div>
+   </div>
+ </div>
 
 <div id="option">
 <!--toggle buttons for displayed data-->
@@ -12,6 +27,8 @@
        <label onclick="nowAscending()" class="toggle-btn"><input type="radio" name="group1" checked/>Ascending</label>
        <label onclick="nowDescending()" class="toggle-btn"><input type="radio" name="group1"/>Descending</label>
    </div>
+</div>
+
 </div>
 
 <p><span id="docs-internal-guid-381ac43c-b547-29ea-7405-0d8f690d5dce">Entitled &ldquo;Gloria&rdquo; and set to </span>Vivaldi&rsquo;s &ldquo;Gloria in D major,&rdquo;&nbsp;the Mark Morris piece will be staged by Barnard&rsquo;s Visiting Associate Professor of Professional Practice Marjorie Folkman, BC &rsquo;91. &ldquo;Gloria&rdquo; was originally performed in 1981 by Mark Morris, and Folkman is one of Morris&rsquo;s former dancers.</p>
@@ -34,6 +51,34 @@
 }
 .barnard-bar:hover {
   fill: #8E908F;
+}
+#colorkey{
+ float: right;
+ border-style: solid;
+ border-color: black;
+ border-width: 1px;
+ border-radius: 5px;
+}
+#title{
+ text-align: center;
+ position: relative;
+ text-decoration: underline;
+}
+#content{
+ padding-left: 2px;
+ padding-right: 2px;
+line-height: 0.1;
+}
+#Columbia{
+ color: #C4D8E2 ;
+}
+#Barnard{
+ color: #005596 ;
+}
+#bordered{
+ border: solid;
+ border-width: 1;
+ border-color: black;
 }
 .x.axis path {
   display: none;
@@ -68,7 +113,7 @@
 
 <script src="http://d3js.org/d3.v3.min.js"></script><script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script><script>
 
-var margin = {top: 40, right: 20, bottom: 200, left: 40},
+var margin = {top: 40, right: 20, bottom: 175, left: 40},
     width = $(document.getElementById("graph")).width() - margin.left - margin.right,
     height = width * 4/7;
 
@@ -133,7 +178,7 @@ function draw(data) {
       .call(xAxis)
       .selectAll("text")  
         .style("text-anchor", "end")
-        .attr("dx", "-.8em")
+        .attr("dx", ".8em")
         .attr("dy", ".15em")
         .attr("transform", function(d) { return "rotate(-65)"; })
         .text(function(d) { return d.substr(d.indexOf(" ") + 1); });
