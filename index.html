@@ -30,6 +30,35 @@ body {
   fill: #8E908F;
 }
 
+#colorkey{
+ float: right;
+ border-style: solid;
+ border-color: black;
+ border-width: 1px;
+ border-radius: 5px;
+}
+#title{
+ text-align: center;
+ position: relative;
+ text-decoration: underline;
+}
+#content{
+ padding-left: 2px;
+ padding-right: 2px;
+}
+#Columbia{
+ color: #C4D8E2 ;
+}
+#Barnard{
+ color: #005596 ;
+}
+
+#graph{
+ border: solid;
+ border-width: 1;
+ border-color: black;
+}
+
 .x.axis path {
   display: none;
 }
@@ -64,8 +93,25 @@ body {
 }
 </style>
 <body>
-  <p id="test">
+  <p id="graph">
   </p>
+
+  <div id="colorkey">
+   
+   <div id= "title">
+     <p>
+       KEY
+     </p>
+   </div>
+   <div id= "content"> 
+     <p id= "Columbia">
+     Light Blue = Columbia
+     </p>
+     <p id= "Barnard">
+     Dark Blue = Barnard
+     </p>
+   </div>
+ </div>
 
   <div id="option">
    <!--toggle buttons for displayed data-->
@@ -73,6 +119,10 @@ body {
        <label onclick="allData()" class="toggle-btn"><input type="radio" name="group2" checked/>All</label>
        <label onclick="freshmenData()" class="toggle-btn"><input type="radio" name="group2"/>Freshmen</label>
        <label onclick="upperclassmenData()" class="toggle-btn"><input type="radio" name="group2"/>Upperclassmen</label>
+   </div>
+   <div class="toggle-btn-grp" id = dataselect>
+       <label onclick="nowAscending()" class="toggle-btn"><input type="radio" name="group1" checked/>Ascending</label>
+       <label onclick="nowDescending()" class="toggle-btn"><input type="radio" name="group1"/>Descending</label>
    </div>
  </div>
   
@@ -88,6 +138,7 @@ var margin = {top: 40, right: 20, bottom: 150, left: 40},
 
 var freshmen = false;
 var upperclassmen = false;
+var ascending = true;
 
 var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
@@ -105,6 +156,9 @@ var yAxis = d3.svg.axis()
     .orient("left")
     //.tickFormat(formatPercent);
 
+var fullData;
+var currData;
+
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
@@ -112,7 +166,7 @@ var tip = d3.tip()
     return "<strong>Cost/Meal:</strong> <span style='color:red'>" + "$" + d.cost + "</span>";
   })
 
-var svg = d3.select(document.getElementById("test")).append("svg")
+var svg = d3.select(document.getElementById("graph")).append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -122,6 +176,9 @@ svg.call(tip);
 
 // default draw, without button clicks
 d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/data.tsv", type, function(error, data) {
+  fullData = data;
+  fullData = fullData.sort(ascendingSort);
+  currData = fullData;
   y.domain([0, d3.max(data, function(d) { return d.cost; })]);
   draw(data);
 });
@@ -132,7 +189,7 @@ function type(d) {
 }
 
 function draw(data) {
-  x.domain(data.map(function(d) { return d.plan.substr(d.plan.indexOf(" ") + 1); }));
+  x.domain(data.map(function(d) { return d.plan; }));
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -141,7 +198,8 @@ function draw(data) {
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
-        .attr("transform", function(d) { return "rotate(-65)"; });
+        .attr("transform", function(d) { return "rotate(-65)"; })
+        .text(function(d) { return d.substr(d.indexOf(" ") + 1); });
 
   svg.append("g")
       .attr("class", "y axis")
@@ -167,10 +225,38 @@ function draw(data) {
 
 function update(data) {
   // get bars from data
-  var bars = svg.selectAll("rect")
-    .data(data);
+  /*if (ascending) {
+    data.sort(function (a, b) {
+      if (a.cost > b.cost)
+      {
+        return 1;
+      }
+      else
+      {
+        return -1
+      }
+    });
+    console.log("ascending: " + data);
+    console.log(data);
+  }
+  else {
+    data.sort(function (a, b) {
+      if (a.cost > b.cost)
+      {
+        return -1;
+      }
+      else
+      {
+        return 1
+      }
+    });
+    console.log("descending: ");
+    console.log(data);
+  }*/
 
-  x.domain(data.map(function(d) { return d.plan.substr(d.plan.indexOf(" ") + 1); }));
+  var bars = svg.selectAll("rect").data(data);
+
+  x.domain(data.map(function(d) { return d.plan; }));
   //Update x-axis
   svg.select(".x.axis")
       .transition()
@@ -180,8 +266,8 @@ function update(data) {
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
-        .attr("transform", function(d) { return "rotate(-65)"; });
-
+        .attr("transform", function(d) { return "rotate(-65)"; })
+        .text(function(d) { return d.substr(d.indexOf(" ") + 1); });
       
   //Exit (removing bars)…
   bars.exit()
@@ -232,11 +318,16 @@ function freshmenData() {
     if (!freshmen) {
       freshmen = true;
       upperclassmen = false;
-      //svg.selectAll("*").remove();
-      // Get limited data
-      d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/freshmen.tsv", function(error, data) {
-        update(data);
-      });
+      currData = fullData.filter(freshmenFilter);
+      if (ascending)
+      {
+        currData.sort(ascendingSort);
+      }
+      else
+      {
+        currData.sort(descendingSort);
+      }
+      update(currData);
     }
 }
 
@@ -245,11 +336,17 @@ function upperclassmenData() {
     if (!upperclassmen) {
       freshmen = false;
       upperclassmen = true;
-      //svg.selectAll("*").remove();
       // Get limited data
-      d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/upperclassmen.tsv", function(error, data) {
-        update(data);
-      });
+      currData = fullData.filter(upperclassmenFilter);
+      if (ascending)
+      {
+        currData.sort(ascendingSort);
+      }
+      else
+      {
+        currData.sort(descendingSort);
+      }
+      update(currData);
     }
 }
 
@@ -258,14 +355,77 @@ function allData() {
   {
     freshmen = false;
     upperclassmen = false;
-    //svg.selectAll("*").remove();
-    // Get the data again
-    d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/data.tsv", function(error, data) {
-      update(data);
-    });
+    currData = fullData;
+    if (ascending)
+    {
+      currData.sort(ascendingSort);
+    }
+    else
+    {
+      currData.sort(descendingSort);
+    }
+    update(currData);
   }
 }
 
+function nowAscending() {
+  ascending = true;
+  currData = currData.sort(ascendingSort);
+  update(currData);
+}
 
+function nowDescending() {
+    ascending = false;
+    currData = currData.sort(descendingSort);
+    update(currData);
+}
+
+function ascendingSort(a, b)
+{
+  if (a.cost > b.cost)
+  {
+    return 1;
+  }
+  if (a.cost < b.cost)
+  {
+    return -1;
+  }
+  return 0;
+}
+
+function descendingSort(a, b)
+{
+  if (a.cost > b.cost)
+  {
+    return -1;
+  }
+  if (a.cost < b.cost)
+  {
+    return 1;
+  }
+  return 0;
+}
+
+function freshmenFilter(element) {
+  if (element.plan.indexOf("Freshman") >= 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+function upperclassmenFilter(element) {
+  if (element.plan.indexOf("Freshman") >= 0)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
 
 </script>
