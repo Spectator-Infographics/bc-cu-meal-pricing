@@ -2,7 +2,17 @@
 
 <p id="graph"></p>
 
-<div id="option"><!--toggle buttons for displayed data--><div class="toggle-btn-grp" id="dataselect"><label class="toggle-btn" onclick="allData()"><input checked="checked" name="group2" type="radio" />All</label> <label class="toggle-btn" onclick="freshmenData()"><input name="group2" type="radio" />Freshmen</label> <label class="toggle-btn" onclick="upperclassmenData()"><input name="group2" type="radio" />Upperclassmen</label></div></div>
+<div id="option">
+<!--toggle buttons for displayed data-->
+<div class="toggle-btn-grp" id="dataselect"><label class="toggle-btn" onclick="allData()"><input checked="checked" name="group2" type="radio" />All</label> 
+<label class="toggle-btn" onclick="freshmenData()"><input name="group2" type="radio" />Freshmen</label> 
+<label class="toggle-btn" onclick="upperclassmenData()"><input name="group2" type="radio" />Upperclassmen</label>
+</div>
+   <div class="toggle-btn-grp" id = dataselect>
+       <label onclick="nowAscending()" class="toggle-btn"><input type="radio" name="group1" checked/>Ascending</label>
+       <label onclick="nowDescending()" class="toggle-btn"><input type="radio" name="group1"/>Descending</label>
+   </div>
+</div>
 
 <p><span id="docs-internal-guid-381ac43c-b547-29ea-7405-0d8f690d5dce">Entitled &ldquo;Gloria&rdquo; and set to </span>Vivaldi&rsquo;s &ldquo;Gloria in D major,&rdquo;&nbsp;the Mark Morris piece will be staged by Barnard&rsquo;s Visiting Associate Professor of Professional Practice Marjorie Folkman, BC &rsquo;91. &ldquo;Gloria&rdquo; was originally performed in 1981 by Mark Morris, and Folkman is one of Morris&rsquo;s former dancers.</p>
 
@@ -58,7 +68,7 @@
 
 <script src="http://d3js.org/d3.v3.min.js"></script><script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script><script>
 
-var margin = {top: 20, right: 10, bottom: 150, left: 40},
+var margin = {top: 40, right: 20, bottom: 200, left: 40},
     width = $(document.getElementById("graph")).width() - margin.left - margin.right,
     height = width * 4/7;
 
@@ -66,6 +76,7 @@ var margin = {top: 20, right: 10, bottom: 150, left: 40},
 
 var freshmen = false;
 var upperclassmen = false;
+var ascending = true;
 
 var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
@@ -82,6 +93,9 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
     //.tickFormat(formatPercent);
+
+var fullData;
+var currData;
 
 var tip = d3.tip()
   .attr('class', 'd3-tip')
@@ -102,6 +116,8 @@ svg.call(tip);
 d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/data.tsv", type, function(error, data) {
   y.domain([0, d3.max(data, function(d) { return d.cost; })]);
   draw(data);
+  fullData = data;
+  currData = fullData;
 });
 
 function type(d) {
@@ -110,8 +126,8 @@ function type(d) {
 }
 
 function draw(data) {
-       x.domain(data.map(function(d) { return d.plan; }));
-       svg.append("g")
+  x.domain(data.map(function(d) { return d.plan; }));
+  svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
@@ -146,8 +162,36 @@ function draw(data) {
 
 function update(data) {
   // get bars from data
-  var bars = svg.selectAll("rect")
-    .data(data);
+  /*if (ascending) {
+    data.sort(function (a, b) {
+      if (a.cost > b.cost)
+      {
+        return 1;
+      }
+      else
+      {
+        return -1
+      }
+    });
+    console.log("ascending: " + data);
+    console.log(data);
+  }
+  else {
+    data.sort(function (a, b) {
+      if (a.cost > b.cost)
+      {
+        return -1;
+      }
+      else
+      {
+        return 1
+      }
+    });
+    console.log("descending: ");
+    console.log(data);
+  }*/
+
+  var bars = svg.selectAll("rect").data(data);
 
   x.domain(data.map(function(d) { return d.plan; }));
   //Update x-axis
@@ -161,7 +205,6 @@ function update(data) {
         .attr("dy", ".15em")
         .attr("transform", function(d) { return "rotate(-65)"; })
         .text(function(d) { return d.substr(d.indexOf(" ") + 1); });
-
       
   //Exit (removing bars)…
   bars.exit()
@@ -212,11 +255,16 @@ function freshmenData() {
     if (!freshmen) {
       freshmen = true;
       upperclassmen = false;
-      //svg.selectAll("*").remove();
-      // Get limited data
-      d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/freshmen.tsv", function(error, data) {
-        update(data);
-      });
+      currData = fullData.filter(freshmenFilter);
+      if (ascending)
+      {
+        currData.sort(ascendingSort);
+      }
+      else
+      {
+        currData.sort(descendingSort);
+      }
+      update(currData);
     }
 }
 
@@ -225,11 +273,17 @@ function upperclassmenData() {
     if (!upperclassmen) {
       freshmen = false;
       upperclassmen = true;
-      //svg.selectAll("*").remove();
       // Get limited data
-      d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/upperclassmen.tsv", function(error, data) {
-        update(data);
-      });
+      currData = fullData.filter(upperclassmenFilter);
+      if (ascending)
+      {
+        currData.sort(ascendingSort);
+      }
+      else
+      {
+        currData.sort(descendingSort);
+      }
+      update(currData);
     }
 }
 
@@ -238,11 +292,76 @@ function allData() {
   {
     freshmen = false;
     upperclassmen = false;
-    //svg.selectAll("*").remove();
-    // Get the data again
-    d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/data.tsv", function(error, data) {
-      update(data);
-    });
+    currData = fullData;
+    if (ascending)
+    {
+      currData.sort(ascendingSort);
+    }
+    else
+    {
+      currData.sort(descendingSort);
+    }
+    update(currData);
+  }
+}
+
+function nowAscending() {
+  ascending = true;
+  currData = currData.sort(ascendingSort);
+  update(currData);
+}
+
+function nowDescending() {
+    ascending = false;
+    currData = currData.sort(descendingSort);
+    update(currData);
+}
+
+function ascendingSort(a, b)
+{
+  if (a.cost > b.cost)
+  {
+    return 1;
+  }
+  if (a.cost < b.cost)
+  {
+    return -1;
+  }
+  return 0;
+}
+
+function descendingSort(a, b)
+{
+  if (a.cost > b.cost)
+  {
+    return -1;
+  }
+  if (a.cost < b.cost)
+  {
+    return 1;
+  }
+  return 0;
+}
+
+function freshmenFilter(element) {
+  if (element.plan.indexOf("Freshman") >= 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+function upperclassmenFilter(element) {
+  if (element.plan.indexOf("Freshman") >= 0)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
   }
 }
 
