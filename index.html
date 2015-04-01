@@ -1,39 +1,10 @@
-<p dir="ltr"><span id="docs-internal-guid-381ac43c-b547-29ea-7405-0d8f690d5dce">The Barnard/Columbia Dances, which will take place on May 2 and 3 at </span>Miller Theatre, will feature works from master choreographer Mark Morris, along with pieces by Jodi Melnick, Diane Coburn Bruning, and John Heginbotham.</p>
-
-<div id = "bordered">
-<p id="graph">
-</p>
-<div id="colorkey">
-   <div id= "title">
-       KEY
-   </div>
-   <div> 
-   <div id="Columbia">
-     Light Blue = Columbia
-   </div>
-   <div id="Barnard">
-     Dark Blue = Barnard
-    </div>
-   </div>
- </div>
-
-<div id="option">
-<!--toggle buttons for displayed data-->
-<div class="toggle-btn-grp" id="dataselect"><label class="toggle-btn" onclick="allData()"><input checked="checked" name="group2" type="radio" />All</label> 
-<label class="toggle-btn" onclick="freshmenData()"><input name="group2" type="radio" />Freshmen</label> 
-<label class="toggle-btn" onclick="upperclassmenData()"><input name="group2" type="radio" />Upperclassmen</label>
-</div>
-   <div class="toggle-btn-grp" id = dataselect>
-       <label onclick="nowAscending()" class="toggle-btn"><input type="radio" name="group1" checked/>Ascending</label>
-       <label onclick="nowDescending()" class="toggle-btn"><input type="radio" name="group1"/>Descending</label>
-   </div>
-</div>
-
-</div>
-
-<p><span id="docs-internal-guid-381ac43c-b547-29ea-7405-0d8f690d5dce">Entitled &ldquo;Gloria&rdquo; and set to </span>Vivaldi&rsquo;s &ldquo;Gloria in D major,&rdquo;&nbsp;the Mark Morris piece will be staged by Barnard&rsquo;s Visiting Associate Professor of Professional Practice Marjorie Folkman, BC &rsquo;91. &ldquo;Gloria&rdquo; was originally performed in 1981 by Mark Morris, and Folkman is one of Morris&rsquo;s former dancers.</p>
-
-<style type="text/css">.axis path,
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+  font: 10px sans-serif;
+}
+.axis path,
 .axis line {
   fill: none;
   stroke: #000;
@@ -67,7 +38,6 @@
 #content{
  padding-left: 2px;
  padding-right: 2px;
-line-height: 0.1;
 }
 #Columbia{
  color: #C4D8E2 ;
@@ -75,7 +45,7 @@ line-height: 0.1;
 #Barnard{
  color: #005596 ;
 }
-#bordered{
+#graph{
  border: solid;
  border-width: 1;
  border-color: black;
@@ -110,66 +80,88 @@ line-height: 0.1;
   left: 0;
 }
 </style>
+<body>
+  <p id="graph">
+  </p>
 
-<script src="http://d3js.org/d3.v3.min.js"></script><script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script><script>
+  <div id="colorkey">
+   
+   <div id= "title">
+     <p>
+       KEY
+     </p>
+   </div>
+   <div id= "content"> 
+     <p id= "Columbia">
+     Light Blue = Columbia
+     </p>
+     <p id= "Barnard">
+     Dark Blue = Barnard
+     </p>
+   </div>
+ </div>
 
-var margin = {top: 40, right: 20, bottom: 175, left: 40},
-    width = $(document.getElementById("graph")).width() - margin.left - margin.right,
-    height = width * 4/7;
-
+  <div id="option">
+   <!--toggle buttons for displayed data-->
+   <div class="toggle-btn-grp" id = dataselect>
+       <label onclick="allData()" class="toggle-btn"><input type="radio" name="group2" checked/>All</label>
+       <label onclick="freshmenData()" class="toggle-btn"><input type="radio" name="group2"/>Freshmen</label>
+       <label onclick="upperclassmenData()" class="toggle-btn"><input type="radio" name="group2"/>Upperclassmen</label>
+   </div>
+   <div class="toggle-btn-grp" id = dataselect>
+       <label onclick="nowAscending()" class="toggle-btn"><input type="radio" name="group1" checked/>Ascending</label>
+       <label onclick="nowDescending()" class="toggle-btn"><input type="radio" name="group1"/>Descending</label>
+   </div>
+ </div>
+  
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script>
+var margin = {top: 40, right: 20, bottom: 150, left: 40},
+    width = 700 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
 //var formatPercent = d3.format(".0%");
-
 var freshmen = false;
 var upperclassmen = false;
 var ascending = true;
-
 var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
     //.rangeBands([0, 100]]);
-
 var y = d3.scale.linear()
     .range([height, 0]);
-
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom");
-
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
     //.tickFormat(formatPercent);
-
 var fullData;
 var currData;
-
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function(d) {
     return "<strong>Cost/Meal:</strong> <span style='color:red'>" + "$" + d.cost + "</span>";
   })
-
 var svg = d3.select(document.getElementById("graph")).append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 svg.call(tip);
-
 // default draw, without button clicks
 d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/data.tsv", type, function(error, data) {
+  fullData = data;
+  fullData = fullData.sort(ascendingSort);
+  currData = fullData;
   y.domain([0, d3.max(data, function(d) { return d.cost; })]);
   draw(data);
-  fullData = data;
-  currData = fullData;
 });
-
 function type(d) {
   d.cost = +d.cost;
   return d;
 }
-
 function draw(data) {
   x.domain(data.map(function(d) { return d.plan; }));
   svg.append("g")
@@ -178,21 +170,20 @@ function draw(data) {
       .call(xAxis)
       .selectAll("text")  
         .style("text-anchor", "end")
-        .attr("dx", ".8em")
+        .attr("dx", "-.8em")
         .attr("dy", ".15em")
         .attr("transform", function(d) { return "rotate(-65)"; })
         .text(function(d) { return d.substr(d.indexOf(" ") + 1); });
-
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
     .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", 6)
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Cost ($/meal)");
-
   svg.selectAll(".bar")
       .data(data)
     .enter().append("rect")
@@ -204,7 +195,6 @@ function draw(data) {
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
 }
-
 function update(data) {
   // get bars from data
   /*if (ascending) {
@@ -235,9 +225,7 @@ function update(data) {
     console.log("descending: ");
     console.log(data);
   }*/
-
   var bars = svg.selectAll("rect").data(data);
-
   x.domain(data.map(function(d) { return d.plan; }));
   //Update x-axis
   svg.select(".x.axis")
@@ -291,10 +279,7 @@ function update(data) {
     .attr("y", function(d) { return y(d.cost); })
     .attr("height", function(d) { return height - y(d.cost); });
 }
-
-
 // Potential better way to do colors: .style("fill", function(d) { return d.plan.split(" ", 1)[0] === "Barnard" ? d3.rgb("#005596") : d3.rgb("#C4D8E2"); });
-
 //  drawing with freshmen limited data section, called by click
 function freshmenData() {
     if (!freshmen) {
@@ -312,7 +297,6 @@ function freshmenData() {
       update(currData);
     }
 }
-
 //  drawing just upperclassmen limited data section, called by click
 function upperclassmenData() {
     if (!upperclassmen) {
@@ -331,7 +315,6 @@ function upperclassmenData() {
       update(currData);
     }
 }
-
 function allData() {
   if (freshmen || upperclassmen)
   {
@@ -349,19 +332,16 @@ function allData() {
     update(currData);
   }
 }
-
 function nowAscending() {
   ascending = true;
   currData = currData.sort(ascendingSort);
   update(currData);
 }
-
 function nowDescending() {
     ascending = false;
     currData = currData.sort(descendingSort);
     update(currData);
 }
-
 function ascendingSort(a, b)
 {
   if (a.cost > b.cost)
@@ -374,7 +354,6 @@ function ascendingSort(a, b)
   }
   return 0;
 }
-
 function descendingSort(a, b)
 {
   if (a.cost > b.cost)
@@ -387,7 +366,6 @@ function descendingSort(a, b)
   }
   return 0;
 }
-
 function freshmenFilter(element) {
   if (element.plan.indexOf("Freshman") >= 0)
   {
@@ -398,7 +376,6 @@ function freshmenFilter(element) {
     return false;
   }
 }
-
 function upperclassmenFilter(element) {
   if (element.plan.indexOf("Freshman") >= 0)
   {
@@ -409,5 +386,4 @@ function upperclassmenFilter(element) {
     return true;
   }
 }
-
 </script>
