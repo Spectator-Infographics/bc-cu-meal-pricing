@@ -1,23 +1,13 @@
-<!-- Article text: -->
-
-
 <p dir="ltr"><span id="docs-internal-guid-381ac43c-b547-29ea-7405-0d8f690d5dce">The Barnard/Columbia Dances, which will take place on May 2 and 3 at </span>Miller Theatre, will feature works from master choreographer Mark Morris, along with pieces by Jodi Melnick, Diane Coburn Bruning, and John Heginbotham.</p>
 
-<!-- article text interupted for graph/mobile image -->
-
-
-<div id="mobile-image">
-<!-- put image for mobile here: -->
-<img src="http://www.calholmanphotography.com/photoblog/ServeImage?file=2522">
-</div>
-
-<!-- HTML for graph BEGINS -->
-
 <div id = "bordered">
-<div id = "graphtitle"> Cost per Meal Swipe at Barnard and Columbia </div>
+<div id = "graphtitle"> Cost/Meal Swipe at Barnard and Columbia </div>
 <p id="graph">
 </p>
 <div id="colorkey">
+   <div id= "title">
+       KEY
+   </div>
    <div> 
    <div>
          <div id="Columbia"></div>
@@ -33,31 +23,31 @@
 
 <div id="inline">
 <!--toggle buttons for displayed data-->
-  <div class="toggle-btn-grp" id="buttons"><label class="toggle-btn" onclick="allData()"><input name="group2" type="radio" />All</label> 
-
-  <label class="toggle-btn" onclick="freshmenData()"><input name="group2" type="radio" checked />Firstyear</label> 
-  <label class="toggle-btn" onclick="upperclassmenData()"><input name="group2" type="radio" />Upperclassmen</label>
-  </div>
-  <div class="toggle-btn-grp" id = "buttons">
-    <label onclick="nowAscending()" class="toggle-btn"><input type="radio" name="group1" checked/>Ascending</label>
-    <label onclick="nowDescending()" class="toggle-btn"><input type="radio" name="group1"/>Descending</label>
-  </div>
+<div class="toggle-btn-grp" id="dataselect"><label class="toggle-btn" onclick="allData()"><input checked="checked" name="group2" type="radio" />All</label> 
+<label class="toggle-btn" onclick="freshmenData()"><input name="group2" type="radio" />Freshmen</label> 
+<label class="toggle-btn" onclick="upperclassmenData()"><input name="group2" type="radio" />Upperclassmen</label>
 </div>
+   <!--<div class="toggle-btn-grp" id = dataselect>
+       <label onclick="nowAscending()" class="toggle-btn"><input type="radio" name="group1" checked/>Ascending</label>
+       <label onclick="nowDescending()" class="toggle-btn"><input type="radio" name="group1"/>Descending</label>
+   </div>
+</div>-->
+
+<!-- sliding button for ascending/descending order -->
+<section class="container">
+<div class="switch">
+  <input type="radio" class="switch-input" name="group1" value="ascending" id="ascending" checked>
+  <label onclick="nowAscending()" class="switch-label switch-label-off">Ascending</label>
+  <input type="radio" class="switch-input" name="group1" value="descending" id="descending">
+  <label onclick="nowDescending()" class="switch-label switch-label-on">Descending</label>
+  <span class="switch-selection"></span>
+</div>
+</section>
 
 </div>
-<!-- HTML for graph ENDS -->
-
-
-<p></p>
-
-<!-- article text continues -->
 
 <p><span id="docs-internal-guid-381ac43c-b547-29ea-7405-0d8f690d5dce">Entitled &ldquo;Gloria&rdquo; and set to </span>Vivaldi&rsquo;s &ldquo;Gloria in D major,&rdquo;&nbsp;the Mark Morris piece will be staged by Barnard&rsquo;s Visiting Associate Professor of Professional Practice Marjorie Folkman, BC &rsquo;91. &ldquo;Gloria&rdquo; was originally performed in 1981 by Mark Morris, and Folkman is one of Morris&rsquo;s former dancers.</p>
 
-<!-- article ends -->
-
-
-<!-- COPY and paste all below at bottom of Drupal Body to make graph work-->
 <style type="text/css">.axis path,
 .axis line {
   fill: none;
@@ -83,9 +73,6 @@
  border-color: black;
  border-width: 1px;
  border-radius: 5px;
-margin-right: 5px;
-margin-bottom: 5px;
-padding: 4px 4px 4px 4px;
 }
 #title{
  text-align: center;
@@ -95,14 +82,10 @@ padding: 4px 4px 4px 4px;
 #content{
  padding-left: 2px;
  padding-right: 2px;
-padding-top: 2px;
-padding-bottom: 2px;
 line-height: 0.1;
 }
 #Columbia{
  padding-left: 20px;
-padding-top: 2px;
-padding-bottom: 2px;
  background-color: #C4D8E2;
  width: 18px;
  height: 18px;
@@ -110,8 +93,6 @@ padding-bottom: 2px;
 }
 #Barnard{
  padding-left: 20px;
-padding-top: 2px;
-padding-bottom: 2px;
  background-color: #005596;
  width: 18px;
  height: 18px;
@@ -120,28 +101,13 @@ padding-bottom: 2px;
 #inline {
  display: inline-block;
 }
-#buttons {
-  display: inline-block;
-  padding-bottom: 5px;
- padding-left: 5px;
-}
 #bordered{
  border: solid;
  border-width: 1;
  border-color: black;
-padding: 3px 3px 3px 3px;
 }
 @media screen and (max-width: 600px) {
 #bordered{
-  display: none !important;
-}
-#mobile-image{
-  width: 100%;
-  height: 100%;
-}
-}
-@media screen and (min-width: 600px) {
-#mobile-image{
   display: none !important;
 }
 }
@@ -181,6 +147,105 @@ padding: 3px 3px 3px 3px;
   top: 100%;
   left: 0;
 }
+/* The following CSS is for the ascending/descending buttons */
+.container {
+  margin: 0 auto;
+  padding: 90px 0;
+  width: 400px;
+  background-image: -webkit-radial-gradient(center, farthest-side, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  background-image: -moz-radial-gradient(center, farthest-side, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  background-image: -o-radial-gradient(center, farthest-side, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  background-image: radial-gradient(center, farthest-side, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+}
+.switch {
+  position: relative;
+  margin: 20px auto;
+  height: 26px;
+  width: 120px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+}
+.switch-label {
+  position: relative;
+  z-index: 2;
+  float: left;
+  width: 58px;
+  line-height: 26px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+.switch-label:active {
+  font-weight: bold;
+}
+.switch-label-off {
+  padding-left: 2px;
+}
+.switch-label-on {
+  padding-right: 2px;
+}
+/*
+ * Note: using adjacent or general sibling selectors combined with
+ *       pseudo classes doesn't work in Safari 5.0 and Chrome 12.
+ *       See this article for more info and a potential fix:
+ *       http://css-tricks.com/webkit-sibling-bug/
+ */
+.switch-input {
+  display: none;
+}
+.switch-input:checked + .switch-label {
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.65);
+  text-shadow: 0 1px rgba(255, 255, 255, 0.25);
+  -webkit-transition: 0.15s ease-out;
+  -moz-transition: 0.15s ease-out;
+  -o-transition: 0.15s ease-out;
+  transition: 0.15s ease-out;
+}
+.switch-input:checked + .switch-label-on ~ .switch-selection {
+  left: 60px;
+  /* Note: left: 50% doesn't transition in WebKit */
+}
+.switch-selection {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  top: 2px;
+  left: 2px;
+  width: 58px;
+  height: 22px;
+  background: #65bd63;
+  border-radius: 3px;
+  background-image: -webkit-linear-gradient(top, #9dd993, #65bd63);
+  background-image: -moz-linear-gradient(top, #9dd993, #65bd63);
+  background-image: -o-linear-gradient(top, #9dd993, #65bd63);
+  background-image: linear-gradient(to bottom, #9dd993, #65bd63);
+  -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 0 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-transition: left 0.15s ease-out;
+  -moz-transition: left 0.15s ease-out;
+  -o-transition: left 0.15s ease-out;
+  transition: left 0.15s ease-out;
+}
+.switch-blue .switch-selection {
+  background: #3aa2d0;
+  background-image: -webkit-linear-gradient(top, #4fc9ee, #3aa2d0);
+  background-image: -moz-linear-gradient(top, #4fc9ee, #3aa2d0);
+  background-image: -o-linear-gradient(top, #4fc9ee, #3aa2d0);
+  background-image: linear-gradient(to bottom, #4fc9ee, #3aa2d0);
+}
+.switch-yellow .switch-selection {
+  background: #c4bb61;
+  background-image: -webkit-linear-gradient(top, #e0dd94, #c4bb61);
+  background-image: -moz-linear-gradient(top, #e0dd94, #c4bb61);
+  background-image: -o-linear-gradient(top, #e0dd94, #c4bb61);
+  background-image: linear-gradient(to bottom, #e0dd94, #c4bb61);
+}
+
 </style>
 
 <script src="http://d3js.org/d3.v3.min.js"></script><script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script><script>
@@ -191,7 +256,7 @@ var margin = {top: 40, right: 20, bottom: 175, left: 40},
 
 //var formatPercent = d3.format(".0%");
 
-var freshmen = true;
+var freshmen = false;
 var upperclassmen = false;
 var ascending = true;
 
@@ -229,23 +294,14 @@ var svg = d3.select(document.getElementById("graph")).append("svg")
 
 svg.call(tip);
 
-
 // default draw, without button clicks
 d3.tsv("https://s3.amazonaws.com/data-projects/mealswipes/data.tsv", type, function(error, data) {
   fullData = data;
-  fullData.forEach(function(t) {
-    if (t.plan.indexOf("Freshman") > -1)
-    {
-      t.plan = t.plan.replace("Freshman", "Firstyear");
-    } 
-  });
   fullData = fullData.sort(ascendingSort);
-  currData = fullData.filter(freshmenFilter);
-  y.domain([0, d3.max(fullData, function(d) { return d.cost; })]);
-  draw(currData);
+  currData = fullData;
+  y.domain([0, d3.max(data, function(d) { return d.cost; })]);
+  draw(data);
 });
-
-
 
 function type(d) {
   d.cost = +d.cost;
@@ -290,6 +346,35 @@ function draw(data) {
 
 function update(data) {
   // get bars from data
+  /*if (ascending) {
+    data.sort(function (a, b) {
+      if (a.cost > b.cost)
+      {
+        return 1;
+      }
+      else
+      {
+        return -1
+      }
+    });
+    console.log("ascending: " + data);
+    console.log(data);
+  }
+  else {
+    data.sort(function (a, b) {
+      if (a.cost > b.cost)
+      {
+        return -1;
+      }
+      else
+      {
+        return 1
+      }
+    });
+    console.log("descending: ");
+    console.log(data);
+  }*/
+
   var bars = svg.selectAll("rect").data(data);
 
   x.domain(data.map(function(d) { return d.plan; }));
@@ -304,7 +389,6 @@ function update(data) {
         .attr("dy", ".15em")
         .attr("transform", function(d) { return "rotate(-65)"; })
         .text(function(d) { return d.substr(d.indexOf(" ") + 1); });
-
       
   //Exit (removing bars)…
   bars.exit()
@@ -444,7 +528,7 @@ function descendingSort(a, b)
 }
 
 function freshmenFilter(element) {
-  if (element.plan.indexOf("Firstyear") >= 0)
+  if (element.plan.indexOf("Freshman") >= 0)
   {
     return true;
   }
@@ -455,7 +539,7 @@ function freshmenFilter(element) {
 }
 
 function upperclassmenFilter(element) {
-  if (element.plan.indexOf("Firstyear") >= 0)
+  if (element.plan.indexOf("Freshman") >= 0)
   {
     return false;
   }
